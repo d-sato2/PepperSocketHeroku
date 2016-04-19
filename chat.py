@@ -23,8 +23,6 @@ app.debug = 'DEBUG' in os.environ
 sockets = Sockets(app)
 redis = redis.from_url(REDIS_URL)
 
-
-
 class ChatBackend(object):
     """Interface for registering and updating WebSocket clients."""
 
@@ -64,7 +62,6 @@ class ChatBackend(object):
 
 chats = ChatBackend()
 chats.start()
-
 
 @app.route('/')
 def hello():
