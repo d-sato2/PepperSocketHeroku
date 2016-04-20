@@ -9,7 +9,7 @@ This simple application uses WebSockets to run a primitive chat server.
 
 import os
 import logging
-# import redis
+import redis
 import gevent
 from flask import Flask, render_template
 from flask_sockets import Sockets
@@ -31,12 +31,12 @@ class ChatBackend(object):
 #        self.pubsub = redis.pubsub()
 #        self.pubsub.subscribe(REDIS_CHAN)
 
-    def __iter_data(self):
-        for message in self.pubsub.listen():
-            data = message.get('data')
-            if message['type'] == 'message':
-                app.logger.info(u'Sending message: {}'.format(data))
-                yield data
+#    def __iter_data(self):
+#        for message in self.pubsub.listen():
+#            data = message.get('data')
+#            if message['type'] == 'message':
+#                app.logger.info(u'Sending message: {}'.format(data))
+#                yield data
 
     def register(self, client):
         """Register a WebSocket connection for Redis updates."""
@@ -50,15 +50,15 @@ class ChatBackend(object):
         except Exception:
             self.clients.remove(client)
 
-    def run(self):
-        """Listens for new messages in Redis, and sends them to clients."""
-        for data in self.__iter_data():
-            for client in self.clients:
-                gevent.spawn(self.send, client, data)
+#    def run(self):
+#        """Listens for new messages in Redis, and sends them to clients."""
+#        for data in self.__iter_data():
+#            for client in self.clients:
+#                gevent.spawn(self.send, client, data)
 
-    def start(self):
-        """Maintains Redis subscription in the background."""
-        gevent.spawn(self.run)
+#    def start(self):
+#        """Maintains Redis subscription in the background."""
+#        gevent.spawn(self.run)
 
 chats = ChatBackend()
 chats.start()
