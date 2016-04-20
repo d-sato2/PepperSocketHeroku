@@ -6,5 +6,5 @@ greenlet==0.4.9
 gunicorn==19.4.5
 itsdangerous==0.24
 Jinja2==2.8
-MarkupSafe==0.23s
+MarkupSafe==0.23
 Werkzeug==0.11.3
