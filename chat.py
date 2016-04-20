@@ -9,27 +9,27 @@ This simple application uses WebSockets to run a primitive chat server.
 
 import os
 import logging
-import redis
+# import redis
 import gevent
 from flask import Flask, render_template
 from flask_sockets import Sockets
 
-REDIS_URL = os.environ['REDIS_URL']
-REDIS_CHAN = 'chat'
+# REDIS_URL = os.environ['REDIS_URL']
+# REDIS_CHAN = 'chat'
 
 app = Flask(__name__)
 app.debug = 'DEBUG' in os.environ
 
 sockets = Sockets(app)
-redis = redis.from_url(REDIS_URL)
+#redis = redis.from_url(REDIS_URL)
 
 class ChatBackend(object):
     """Interface for registering and updating WebSocket clients."""
 
     def __init__(self):
         self.clients = list()
-        self.pubsub = redis.pubsub()
-        self.pubsub.subscribe(REDIS_CHAN)
+#        self.pubsub = redis.pubsub()
+#        self.pubsub.subscribe(REDIS_CHAN)
 
     def __iter_data(self):
         for message in self.pubsub.listen():
@@ -77,7 +77,7 @@ def inbox(ws):
 
         if message:
             app.logger.info(u'Inserting message: {}'.format(message))
-            redis.publish(REDIS_CHAN, message)
+#            redis.publish(REDIS_CHAN, message)
 
 @sockets.route('/receive')
 def outbox(ws):
