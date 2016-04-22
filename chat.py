@@ -14,14 +14,24 @@ import gevent
 from flask import Flask, render_template
 from flask_sockets import Sockets
 
-REDIS_URL = os.environ['REDIS_URL']
+#if os.environ['REDIS_URL']!=None:
+#    REDIS_URL = os.environ['REDIS_URL']
+#    redis = redis.from_url(REDIS_URL)
+#else:
+#    HOST='localhost'
+#    PORT=6379
+#    DB=0
+#    redis = redis.Redis(host=HOST, port=PORT, db=DB)
+HOST='localhost'
+PORT=6379
+DB=0
+redis = redis.Redis(host=HOST, port=PORT, db=DB)
 REDIS_CHAN = 'chat'
 
 app = Flask(__name__)
 app.debug = 'DEBUG' in os.environ
 
 sockets = Sockets(app)
-redis = redis.from_url(REDIS_URL)
 
 class ChatBackend(object):
     """Interface for registering and updating WebSocket clients."""
@@ -71,7 +81,7 @@ def hello():
 def inbox(ws):
     """Receives incoming chat messages, inserts them into Redis."""
     while not ws.closed:
-        Sleep to prevent *constant* context-switches.
+        # Sleep to prevent *constant* context-switches.
         gevent.sleep(0.1)
         message = ws.receive()
 
@@ -85,8 +95,5 @@ def outbox(ws):
     chats.register(ws)
 
     while not ws.closed:
-        Context switch while `ChatBackend.start` is running in the background.
+        # Context switch while `ChatBackend.start` is running in the background.
         gevent.sleep(0.1)
-
-
-
