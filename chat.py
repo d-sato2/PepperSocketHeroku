@@ -13,6 +13,8 @@ import redis
 import gevent
 from flask import Flask, render_template
 from flask_sockets import Sockets
+from flask.ext.uwsgi_websocket import WebSocket
+from flask.ext.uwsgi_websocket import GeventWebSocket
 
 #if os.environ['REDIS_URL']!=None:
 #    REDIS_URL = os.environ['REDIS_URL']
