@@ -13,8 +13,6 @@ import redis
 import gevent
 from flask import Flask, render_template
 from flask_sockets import Sockets
-from flask.ext.uwsgi_websocket import WebSocket
-from flask.ext.uwsgi_websocket import GeventWebSocket
 
 #if os.environ['REDIS_URL']!=None:
 #    REDIS_URL = os.environ['REDIS_URL']
@@ -47,6 +45,7 @@ class ChatBackend(object):
         for message in self.pubsub.listen():
             data = message.get('data')
             if message['type'] == 'message':
+                data = data.decode('utf-8')
                 app.logger.info(u'Sending message: {}'.format(data))
                 yield data
 
@@ -88,6 +87,7 @@ def inbox(ws):
         message = ws.receive()
 
         if message:
+            message = message.decode('utf-8')
             app.logger.info(u'Inserting message: {}'.format(message))
             redis.publish(REDIS_CHAN, message)
 
