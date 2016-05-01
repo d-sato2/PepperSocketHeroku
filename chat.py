@@ -11,8 +11,10 @@ import os
 import logging
 import redis
 import gevent
-from flask import Flask, render_template
+from flask import Flask, request, session, g, redirect, url_for, abort, \
+     render_template, flash
 from flask_sockets import Sockets
+from sqlite3 import dbapi2 as sqlite3
 
 #if os.environ['REDIS_URL']!=None:
 #    REDIS_URL = os.environ['REDIS_URL']
@@ -27,11 +29,19 @@ PORT=6379
 DB=0
 redis = redis.Redis(host=HOST, port=PORT, db=DB)
 REDIS_CHAN = 'chat'
-
 app = Flask(__name__)
 app.debug = 'DEBUG' in os.environ
-
 sockets = Sockets(app)
+
+# Load default config and override config from an environment variable
+app.config.update(dict(
+    DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+    DEBUG=True,
+    SECRET_KEY='development key',
+    USERNAME='admin',
+    PASSWORD='default'
+))
+app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 class ChatBackend(object):
     """Interface for registering and updating WebSocket clients."""
@@ -53,6 +63,33 @@ class ChatBackend(object):
         """Register a WebSocket connection for Redis updates."""
         self.clients.append(client)
 
+    def connect_db(self):
+        """Connects to the specific database."""
+        rv = sqlite3.connect(app.config['DATABASE'])
+        rv.row_factory = sqlite3.Row
+        return rv
+
+    def init_db(self):
+        """Initializes the database."""
+        db = chats.get_db()
+        with app.open_resource('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+    @app.cli.command('initdb')
+    def initdb_command():
+        """Creates the database tables."""
+        chats.init_db()
+        print('Initialized the database.')
+
+    def get_db(self):
+        """Opens a new database connection if there is none yet for the
+        current application context.
+        """
+        if not hasattr(g, 'sqlite_db'):
+            g.sqlite_db = chats.connect_db()
+        return g.sqlite_db
+
     def send(self, client, data):
         """Send given data to the registered client.
         Automatically discards invalid connections."""
@@ -71,10 +108,19 @@ class ChatBackend(object):
         """Maintains Redis subscription in the background."""
         gevent.spawn(self.run)
 
+
 chats = ChatBackend()
 chats.start()
 
 @app.route('/')
+def show_entries():
+    db = chats.get_db()
+    cur = db.execute('select title, text from entries order by id desc')
+    entries = cur.fetchall()
+    return render_template('show_entries.html', entries=entries)
+
+
+@app.route('/chat')    
 def hello():
     return render_template('index.html')
 
@@ -99,3 +145,35 @@ def outbox(ws):
     while not ws.closed:
         # Context switch while `ChatBackend.start` is running in the background.
         gevent.sleep(0.1)
+
+@app.route('/add', methods=['POST'])
+def add_entry():
+    if not session.get('logged_in'):
+        abort(401)
+    db = chats.get_db()
+    db.execute('insert into entries (title, text) values (?, ?)',
+               [request.form['title'], request.form['text']])
+    db.commit()
+    flash('New entry was successfully posted')
+    return redirect(url_for('show_entries'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('show_entries'))
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('show_entries'))

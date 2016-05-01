@@ -1,0 +1,15 @@
+Flask Pepper ChatアプリにDBを追加するときに行った方法
+
+参考URL：
+https://github.com/pallets/flask/tree/master/examples/flaskr
+
+
+エラー　@app.cli.command('initdb')の対処法
+pip install https://github.com/mitsuhiko/flask/tarball/master
+
+
+def hello():
+    return render_template('index.html')
+
+DBの作り方
+コマンド　flask --app=chat initdb
