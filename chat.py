@@ -108,7 +108,6 @@ class ChatBackend(object):
         """Maintains Redis subscription in the background."""
         gevent.spawn(self.run)
 
-
 chats = ChatBackend()
 chats.start()
 
@@ -129,6 +128,24 @@ def add_entry():
     db.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
+
+@app.route('/edit/<int:entry_id>', methods=['GET', 'PATCH'])
+def edit_entry(entry_id):
+    error = None
+    if not session.get('logged_in'):
+        abort(401)
+    db = chats.get_db()
+    cur = db.execute('select id, title, text from entries where id = ?', [entry_id])
+    entry = cur.fetchone()
+    if request.method == 'PATCH':
+        db = chats.get_db()
+        print "patch start"
+        db.execute('update entries set title = ?, text = ? where id = ?',
+                   [request.form['title'], request.form['text'], entry_id])
+        db.commit()
+        flash('The entry was successfully edited')
+        return redirect(url_for('show_entries'))
+    return render_template('edit.html', error=error, entry=entry)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
