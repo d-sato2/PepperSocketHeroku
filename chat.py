@@ -115,36 +115,9 @@ chats.start()
 @app.route('/')
 def show_entries():
     db = chats.get_db()
-    cur = db.execute('select title, text from entries order by id desc')
+    cur = db.execute('select id, title, text from entries order by id desc')
     entries = cur.fetchall()
     return render_template('show_entries.html', entries=entries)
-
-
-@app.route('/chat')    
-def hello():
-    return render_template('index.html')
-
-@sockets.route('/submit')
-def inbox(ws):
-    """Receives incoming chat messages, inserts them into Redis."""
-    while not ws.closed:
-        # Sleep to prevent *constant* context-switches.
-        gevent.sleep(0.1)
-        message = ws.receive()
-
-        if message:
-            message = message.decode('utf-8')
-            app.logger.info(u'Inserting message: {}'.format(message))
-            redis.publish(REDIS_CHAN, message)
-
-@sockets.route('/receive')
-def outbox(ws):
-    """Sends outgoing chat messages, via `ChatBackend`."""
-    chats.register(ws)
-
-    while not ws.closed:
-        # Context switch while `ChatBackend.start` is running in the background.
-        gevent.sleep(0.1)
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -171,9 +144,35 @@ def login():
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
+@app.route('/chat')
+def hello():
+    return render_template('index.html')
+
+@sockets.route('/submit')
+def inbox(ws):
+    """Receives incoming chat messages, inserts them into Redis."""
+    while not ws.closed:
+        # Sleep to prevent *constant* context-switches.
+        gevent.sleep(0.1)
+        message = ws.receive()
+
+        if message:
+            message = message.decode('utf-8')
+            app.logger.info(u'Inserting message: {}'.format(message))
+            redis.publish(REDIS_CHAN, message)
+
+@sockets.route('/receive')
+def outbox(ws):
+    """Sends outgoing chat messages, via `ChatBackend`."""
+    chats.register(ws)
+
+    while not ws.closed:
+        # Context switch while `ChatBackend.start` is running in the background.
+        gevent.sleep(0.1)
+

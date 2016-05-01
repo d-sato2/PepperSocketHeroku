@@ -1,21 +1,37 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method="post" class="add-entry">
-      <dl>
-        <dt>Title:
-        <dd><input type="text" size="30" name="title">
-        <dt>Text:
-        <dd><textarea name="text" rows="5" cols="40"></textarea>
-        <dd><input type="submit" value="Share">
-      </dl>
-    </form>
+  <form id="input-form" class="form-inline" action="{{ url_for('add_entry') }}" method="post">
+    <div class="form-group">
+      <input type="text" size="30" name="title" class="form-control" placeholder="Enter title here!" autofocus />
+    </div>
+    <div class="form-group">
+      <input type="text" size="30" name="text" class="form-control" placeholder="Enter text here!" autofocus />
+    </div>
+    <button class="btn btn-primary" type="submit">Register</button>
+  </form>
   {% endif %}
-  <ul class="entries">
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>title</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
   {% for entry in entries %}
-    <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+    <tr>
+    <td>{{ entry.id }}</td>
+    <td>{{ entry.title }}</td>
+    <td>{{ entry.text|safe }}</td>
   {% else %}
-    <li><em>Unbelievable.  No entries here so far</em>
+    <td>Unbelievable.</td>
+    <td>No entries here</td>
+    <td>so far</td>
+    </tr>
   {% endfor %}
-  </ul>
+  </tbody>
+</table>
 {% endblock %}
