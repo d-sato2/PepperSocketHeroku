@@ -129,23 +129,23 @@ def add_entry():
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 
-@app.route('/edit/<int:entry_id>', methods=['GET', 'PATCH'])
+@app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
 def edit_entry(entry_id):
     error = None
     if not session.get('logged_in'):
         abort(401)
-    db = chats.get_db()
-    cur = db.execute('select id, title, text from entries where id = ?', [entry_id])
-    entry = cur.fetchone()
-    if request.method == 'PATCH':
+    if request.method == 'GET':
         db = chats.get_db()
-        print "patch start"
+        cur = db.execute('select id, title, text from entries where id = ?', [entry_id])
+        entry = cur.fetchone()
+        return render_template('edit.html', error=error, entry=entry)
+    elif request.method == 'POST':
+        db = chats.get_db()
         db.execute('update entries set title = ?, text = ? where id = ?',
                    [request.form['title'], request.form['text'], entry_id])
         db.commit()
-        flash('The entry was successfully edited')
+        flash('The entry was successfully updated')
         return redirect(url_for('show_entries'))
-    return render_template('edit.html', error=error, entry=entry)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

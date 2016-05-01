@@ -18,6 +18,7 @@
       <th>ID</th>
       <th>title</th>
       <th>text</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -26,10 +27,12 @@
     <td>{{ entry.id }}</td>
     <td>{{ entry.title }}</td>
     <td>{{ entry.text|safe }}</td>
+    <td><a href="{{ url_for('edit_entry', entry_id = entry.id) }}" class="btn btn-info btn-sm active" role="button">Edit</a></td>
   {% else %}
     <td>Unbelievable.</td>
     <td>No entries here</td>
     <td>so far</td>
+    <td></td>
     </tr>
   {% endfor %}
   </tbody>
