@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h4>ID : {{ entry.id }} の観光客情報</h4>
+  <h4>title : {{ entry.title }}</h4>
+  <h4>text : {{ entry.text|safe }}</h4>
+{% endblock %}

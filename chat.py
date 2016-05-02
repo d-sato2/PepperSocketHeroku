@@ -129,6 +129,15 @@ def add_entry():
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 
+@app.route('/show/<int:entry_id>', methods=['GET'])
+def show_entry(entry_id):
+    if not session.get('logged_in'):
+        abort(401)
+    db = chats.get_db()
+    cur = db.execute('select id, title, text from entries where id = ?', [entry_id])
+    entry = cur.fetchone()
+    return render_template('show.html', entry=entry)
+
 @app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
 def edit_entry(entry_id):
     error = None

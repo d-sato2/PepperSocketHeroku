@@ -1,5 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
+  <div class="text-right">
+    {% if not session.logged_in %}
+      <a href="{{ url_for('login') }}" class="btn btn-primary btn-md active" role="button">log in</a>
+    {% else %}
+      <a href="{{ url_for('logout') }}" class="btn btn-default btn-md active" role="button">log out</a>
+    {% endif %}
+  </div>
   {% if session.logged_in %}
   <form id="input-form" class="form-inline" action="{{ url_for('add_entry') }}" method="post">
     <div class="form-group">
@@ -19,6 +26,7 @@
       <th>title</th>
       <th>text</th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -28,10 +36,12 @@
     <td>{{ entry.title }}</td>
     <td>{{ entry.text|safe }}</td>
     <td><a href="{{ url_for('edit_entry', entry_id = entry.id) }}" class="btn btn-info btn-sm active" role="button">Edit</a></td>
+    <td><a href="{{ url_for('show_entry', entry_id = entry.id) }}" class="btn btn-default btn-sm active" role="button">Show</a></td>
   {% else %}
     <td>Unbelievable.</td>
     <td>No entries here</td>
     <td>so far</td>
+    <td></td>
     <td></td>
     </tr>
   {% endfor %}
