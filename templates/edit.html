@@ -2,14 +2,30 @@
 {% block body %}
   {% if session.logged_in %}
   <h4>ID : {{ entry.id }} の観光客情報を以下のように変更します</h4>
-  <form id="input-form" class="form-inline" action="{{ url_for('edit_entry', entry_id = entry.id) }}" method="post">
+  <form id="input-form" class="form-inline" action="{{ url_for('add_entry') }}" method="post">
     <div class="form-group">
-      <input type="text" size="30" name="title" class="form-control" value="{{ entry.title }}" autofocus />
+      <label>QRcode</label>
+      <input type="text" size="30" name="qr" class="form-control" value="{{ entry.qr }}" autofocus />
     </div>
     <div class="form-group">
-      <input type="text" size="30" name="text" class="form-control" value="{{ entry.text|safe }}"  autofocus />
+      <label>Name</label>
+      <input type="text" size="30" name="name" class="form-control" value="{{ entry.name }}" autofocus />
     </div>
-    <button class="btn btn-primary" type="submit">Update</button>
+    <div class="form-group">
+      <label>Language</label>
+      <select class="form-control" name="lang" >
+        <option value="Japanese">Japanese</option>
+        <option value="English">English</option>l
+        <option value="Chinese">Chinese</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Memo</label>
+      <input type="text" size="30" name="memo" class="form-control" value="{{ entry.memo|safe }}" autofocus />
+    </div>
+    <div class="text-right">
+      <button class="btn btn-primary" type="submit">Register</button>
+    </div>
   </form>
   {% endif %}
 {% endblock %}

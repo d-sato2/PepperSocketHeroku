@@ -114,7 +114,7 @@ chats.start()
 @app.route('/')
 def show_entries():
     db = chats.get_db()
-    cur = db.execute('select id, title, text from entries order by id desc')
+    cur = db.execute('select id, qr, name, lang, memo from entries order by id desc')
     entries = cur.fetchall()
     return render_template('show_entries.html', entries=entries)
 
@@ -123,8 +123,8 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     db = chats.get_db()
-    db.execute('insert into entries (title, text) values (?, ?)',
-               [request.form['title'], request.form['text']])
+    db.execute('insert into entries (qr, name, lang, memo) values (?, ?, ?, ?)',
+               [request.form['qr'], request.form['name'], request.form['lang'], request.form['memo']])
     db.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
@@ -134,7 +134,7 @@ def show_entry(entry_id):
     if not session.get('logged_in'):
         abort(401)
     db = chats.get_db()
-    cur = db.execute('select id, title, text from entries where id = ?', [entry_id])
+    cur = db.execute('select id, qr, name, lang, memo from entries where id = ?', [entry_id])
     entry = cur.fetchone()
     return render_template('show.html', entry=entry)
 
@@ -145,13 +145,13 @@ def edit_entry(entry_id):
         abort(401)
     if request.method == 'GET':
         db = chats.get_db()
-        cur = db.execute('select id, title, text from entries where id = ?', [entry_id])
+        cur = db.execute('select id, qr, name, lang, memo from entries where id = ?', [entry_id])
         entry = cur.fetchone()
         return render_template('edit.html', error=error, entry=entry)
     elif request.method == 'POST':
         db = chats.get_db()
-        db.execute('update entries set title = ?, text = ? where id = ?',
-                   [request.form['title'], request.form['text'], entry_id])
+        db.execute('update entries set qr = ?, name = ?, lang = ?, memo = ? where id = ?',
+                   [request.form['qr'], request.form['name'], request.form['lang'], request.form['memo'], entry_id])
         db.commit()
         flash('The entry was successfully updated')
         return redirect(url_for('show_entries'))
