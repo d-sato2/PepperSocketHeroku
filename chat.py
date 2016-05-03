@@ -131,8 +131,6 @@ def add_entry():
 
 @app.route('/show/<int:entry_id>', methods=['GET'])
 def show_entry(entry_id):
-    if not session.get('logged_in'):
-        abort(401)
     db = chats.get_db()
     cur = db.execute('select id, qr, name, lang, memo from entries where id = ?', [entry_id])
     entry = cur.fetchone()
