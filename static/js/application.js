@@ -10,6 +10,13 @@ var outbox = new ReconnectingWebSocket(ws_scheme + location.host + "/submit");
 
 function home(){location.href = "http://" + location.host}
 
+function kakunin(id){
+  ret = confirm("ID:" + id + "の観光客を情報を削除します。\n本当によろしいですか？");
+  if (ret == true){
+    location.href = "http://" + location.host + "/delete/" + id;
+  }
+}
+
 inbox.onmessage = function(message) {
   var data = JSON.parse(message.data);
   $("#chat-text").append("<div class='panel panel-default'><div class='panel-heading'>" + $('<span/>').text(data.handle).html() + "</div><div class='panel-body'>" + $('<span/>').text(data.text).html() + "</div></div>");

@@ -5,25 +5,32 @@ Chat Server
 ===========
 
 This simple application uses WebSockets to run a primitive chat server.
+
+initialize the database with this command:
+
+flask --app=chat initdb
 """
 
 import os
-import logging
 import redis
 import gevent
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 from flask_sockets import Sockets
 from sqlite3 import dbapi2 as sqlite3
+from datetime import datetime
 
-#if os.environ['REDIS_URL']!=None:
-#    REDIS_URL = os.environ['REDIS_URL']
-#    redis = redis.from_url(REDIS_URL)
-#else:
-#    HOST='localhost'
-#    PORT=6379
-#    DB=0
-#    redis = redis.Redis(host=HOST, port=PORT, db=DB)
+'''
+if os.environ['REDIS_URL']!=None:
+    REDIS_URL = os.environ['REDIS_URL']
+    redis = redis.from_url(REDIS_URL)
+else:
+    HOST='localhost'
+    PORT=6379
+    DB=0
+    redis = redis.Redis(host=HOST, port=PORT, db=DB)
+'''
+
 HOST='localhost'
 PORT=6379
 DB=0
@@ -114,7 +121,7 @@ chats.start()
 @app.route('/')
 def show_entries():
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, memo from entries order by id desc')
+    cur = db.execute('select id, qr, name, lang, memo, start from entries order by id desc')
     entries = cur.fetchall()
     return render_template('show_entries.html', entries=entries)
 
@@ -123,8 +130,8 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     db = chats.get_db()
-    db.execute('insert into entries (qr, name, lang, memo) values (?, ?, ?, ?)',
-               [request.form['qr'], request.form['name'], request.form['lang'], request.form['memo']])
+    db.execute('insert into entries (qr, name, lang, memo, start) values (?, ?, ?, ?, ?)',
+               [request.form['qr'], request.form['name'], request.form['lang'], request.form['memo'], datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     db.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
@@ -132,7 +139,7 @@ def add_entry():
 @app.route('/show/<int:entry_id>', methods=['GET'])
 def show_entry(entry_id):
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, memo from entries where id = ?', [entry_id])
+    cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
     entry = cur.fetchone()
     return render_template('show.html', entry=entry)
 
@@ -143,7 +150,7 @@ def edit_entry(entry_id):
         abort(401)
     if request.method == 'GET':
         db = chats.get_db()
-        cur = db.execute('select id, qr, name, lang, memo from entries where id = ?', [entry_id])
+        cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
         entry = cur.fetchone()
         return render_template('edit.html', error=error, entry=entry)
     elif request.method == 'POST':
@@ -153,6 +160,15 @@ def edit_entry(entry_id):
         db.commit()
         flash('The entry was successfully updated')
         return redirect(url_for('show_entries'))
+
+@app.route('/delete/<int:entry_id>', methods=['GET'])
+def delete_entry(entry_id):
+    if not session.get('logged_in'):
+        abort(401)
+    db = chats.get_db()
+    cur = db.execute('delete from entries where id = ?', [entry_id])
+    db.commit()
+    return render_template('delete.html', entry_id = entry_id)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

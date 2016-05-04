@@ -43,6 +43,7 @@
       <th>name</th>
       <th>language</th>
       <th>memo</th>
+      <th>start time</th>
   {% if session.logged_in %}
       <th></th>
       <th></th>
@@ -57,14 +58,17 @@
     <td>{{ entry.name }}</td>
     <td>{{ entry.lang }}</td>
     <td>{{ entry.memo|safe }}</td>
+    <td>{{ entry.start }}</td>
   {% if session.logged_in %}
-    <td><a href="{{ url_for('edit_entry', entry_id = entry.id) }}" class="btn btn-info btn-sm active" role="button">Edit</a></td>
     <td><a href="{{ url_for('show_entry', entry_id = entry.id) }}" class="btn btn-default btn-sm active" role="button">Show</a></td>
+    <td><a href="{{ url_for('edit_entry', entry_id = entry.id) }}" class="btn btn-info btn-sm active" role="button">Edit</a></td>
+    <td><a onclick=kakunin({{entry.id}}) class="btn btn-warning btn-sm active" role="button">Delete</a></td>
   {% endif %}
   {% else %}
     <td>Unbelievable.</td>
     <td>No entries here</td>
     <td>so far</td>
+    <td></td>
     <td></td>
     <td></td>
   {% if session.logged_in %}
