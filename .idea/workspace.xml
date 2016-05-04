@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0563e5d3-f0b9-4cb6-bec9-2d53582eb8f7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/flaskr.db" afterPath="$PROJECT_DIR$/flaskr.db" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/chat.py" afterPath="$PROJECT_DIR$/chat.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requirements.txt" afterPath="$PROJECT_DIR$/requirements.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/application.js" afterPath="$PROJECT_DIR$/static/js/application.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/show_entries.html" afterPath="$PROJECT_DIR$/templates/show_entries.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requestsTest.py" afterPath="$PROJECT_DIR$/requestsTest.py" />
     </list>
     <ignored path="PepperSocketHeroku.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,9 +27,9 @@
         <entry file="file://$PROJECT_DIR$/chat.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="3030">
-              <caret line="202" column="18" selection-start-line="202" selection-start-column="18" selection-end-line="202" selection-end-column="18" />
+              <caret line="207" column="18" selection-start-line="207" selection-start-column="18" selection-end-line="207" selection-end-column="18" />
               <folding>
-                <element signature="e#131#140#0" expanded="true" />
+                <element signature="e#200#209#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -180,9 +173,9 @@
     <entry file="file://$PROJECT_DIR$/chat.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3030">
-          <caret line="202" column="18" selection-start-line="202" selection-start-column="18" selection-end-line="202" selection-end-column="18" />
+          <caret line="207" column="18" selection-start-line="207" selection-start-column="18" selection-end-line="207" selection-end-column="18" />
           <folding>
-            <element signature="e#131#140#0" expanded="true" />
+            <element signature="e#200#209#0" expanded="true" />
           </folding>
         </state>
       </provider>
