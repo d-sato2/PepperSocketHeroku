@@ -15,7 +15,7 @@ import os
 import redis
 import gevent
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
+     render_template, flash, jsonify
 from flask_sockets import Sockets
 from sqlite3 import dbapi2 as sqlite3
 from datetime import datetime
@@ -142,6 +142,22 @@ def show_entry(entry_id):
     cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
     entry = cur.fetchone()
     return render_template('show.html', entry=entry)
+
+
+@app.route('/json/<int:entry_id>', methods=['GET'])
+def json_entry(entry_id):
+    db = chats.get_db()
+    cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
+    entry = cur.fetchone()
+    entry_json ={
+           'id': entry[0],
+           'qr': entry[1],
+           'name': entry[2],
+           'lang': entry[3],
+           'memo': entry[4],
+           'start': entry[5],
+       }
+    return jsonify(entry_json)
 
 @app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
 def edit_entry(entry_id):
