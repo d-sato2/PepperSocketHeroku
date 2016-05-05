@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 <div class="container">
   <div class="jumbotron">
-  <h1><a onclick = "home()">Tourist Information</a></h1>
+  <h1><a onclick = "home()" style="cursor: pointer;">Tourist Information</a></h1>
   </div>
   {% for message in get_flashed_messages() %}
     {% if not session.logged_in %}
