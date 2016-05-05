@@ -14,9 +14,9 @@
     <div class="form-group">
       <label>Language</label>
       <select class="form-control" name="lang" >
-        <option value="Japanese">Japanese</option>
-        <option value="English">English</option>l
-        <option value="Chinese">Chinese</option>
+        <option value="Japanese"{% if entry.lang=="Japanese" %} selected="selected"{% endif %}>Japanese</option>
+        <option value="English"{% if entry.lang=="English" %} selected="selected"{% endif %}>English</option>l
+        <option value="Chinese"{% if entry.lang=="Chinese" %} selected="selected"{% endif %}>Chinese</option>
       </select>
     </div>
     <div class="form-group">
