@@ -144,10 +144,10 @@ def show_entry(entry_id):
     return render_template('show.html', entry=entry)
 
 
-@app.route('/json/<int:entry_id>', methods=['GET'])
-def json_entry(entry_id):
+@app.route('/json/<int:entry_qr>', methods=['GET'])
+def json_entry(entry_qr):
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
+    cur = db.execute('select id, qr, name, lang, memo, start from entries where qr = ?', [entry_qr])
     entry = cur.fetchone()
     entry_json ={
            'id': entry[0],
