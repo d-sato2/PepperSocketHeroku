@@ -1,8 +1,9 @@
-<!doctype html>
-<script type="text/javascript" src="/static/js/application.js"></script>
-<div>
-  ID :{{entry_id}}の観光客情報を削除しました。
-</div>
-<div>
-  <a onclick = "home()" style="cursor: pointer; color: blue;">Back</a>
-</div>
+{% extends "layout.html" %}
+{% block body %}
+	<div>
+	  ID :{{entry_id}}の観光客情報を削除しました。
+	</div>
+	<div>
+	  <a onclick = "home()" style="cursor: pointer;">Back</a>
+	</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-  <h4>ID : {{ entry.id }} の観光客情報を以下のように変更します</h4>
+  <h4>ID : {{ entry.id }} の観光客情報を変更します</h4>
   <form id="input-form" class="form-inline" action="{{ url_for('edit_entry', entry_id = entry.id) }}" method="post">
     <div class="form-group">
       <label>QRcode</label>
