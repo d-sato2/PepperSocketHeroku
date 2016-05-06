@@ -149,15 +149,18 @@ def json_entry(entry_qr):
     db = chats.get_db()
     cur = db.execute('select id, qr, name, lang, memo, start from entries where qr = ?', [entry_qr])
     entry = cur.fetchone()
-    entry_json ={
-           'id': entry[0],
-           'qr': entry[1],
-           'name': entry[2],
-           'lang': entry[3],
-           'memo': entry[4],
-           'start': entry[5],
-       }
-    return jsonify(entry_json)
+    if entry is None:
+        return 'There is no data. Please check QR code number.'
+    else:
+        entry_json ={
+               'id': entry[0],
+               'qr': entry[1],
+               'name': entry[2],
+               'lang': entry[3],
+               'memo': entry[4],
+               'start': entry[5],
+           }
+        return jsonify(entry_json)
 
 @app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
 def edit_entry(entry_id):
