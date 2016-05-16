@@ -157,26 +157,33 @@ def show_entry(entry_id):
     entry = cur.fetchone()
     return render_template('show.html', entry=entry)
 
-
-@app.route('/json/<int:entry_qr>', methods=['GET'])
+@app.route('/json/<int:entry_qr>', methods=['GET', 'POST'])
 def json_entry(entry_qr):
-    db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries where qr = ?', [entry_qr])
-    entry = cur.fetchone()
-    if entry is None:
-        return 'There is no data. Please check QR code number.'
-    else:
-        entry_json ={
-               'id': entry[0],
-               'qr': entry[1],
-               'name': entry[2],
-               'lang': entry[3],
-               'place': entry[4],
-               'memo': entry[5],
-               'start': entry[6],
-               'start': entry[7]
-           }
-        return jsonify(entry_json)
+    if request.method == 'GET':
+        db = chats.get_db()
+        cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries where qr = ?', [entry_qr])
+        entry = cur.fetchone()
+        if entry is None:
+            return 'There is no data. Please check QR code number.'
+        else:
+            entry_json ={
+                   'id': entry[0],
+                   'qr': entry[1],
+                   'name': entry[2],
+                   'lang': entry[3],
+                   'place': entry[4],
+                   'memo': entry[5],
+                   'start': entry[6],
+                   'goal': entry[7]
+               }
+            return jsonify(entry_json)
+    elif request.method == 'POST':
+        db = chats.get_db()
+        db.execute('update entries set goal = ? where qr = ?',
+                   [request.form['goal'], entry_qr])
+        db.commit()
+        flash('The goal time was successfully updated')
+        return redirect(url_for('show_entries'))
 
 @app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
 def edit_entry(entry_id):
@@ -229,7 +236,6 @@ def logout():
 @app.route('/chat')
 def hello():
     return render_template('index.html')
-
 
 @sockets.route('/submit')
 def inbox(ws):

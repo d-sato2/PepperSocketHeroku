@@ -48,7 +48,8 @@
       <th>Language</th>
       <th>From</th>
       <th>Memo</th>
-      <th>Start time</th>
+      <th>Start</th>
+      <th>Goal</th>
   {% if session.logged_in %}
       <th></th>
       <th></th>
@@ -65,6 +66,7 @@
     <td>{{ entry.place }}</td>
     <td>{{ entry.memo|safe }}</td>
     <td>{{ entry.start }}</td>
+    <td>{{ entry.goal }}</td>
   {% if session.logged_in %}
     <td><a href="{{ url_for('show_entry', entry_id = entry.id) }}" class="btn btn-default btn-sm active" role="button">Show</a></td>
     <td><a href="{{ url_for('edit_entry', entry_id = entry.id) }}" class="btn btn-info btn-sm active" role="button">Edit</a></td>
@@ -74,6 +76,7 @@
     <td>Unbelievable.</td>
     <td>No entries here</td>
     <td>so far</td>
+    <td></td>
     <td></td>
     <td></td>
     <td></td>
