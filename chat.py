@@ -12,7 +12,9 @@ flask --app=chat initdb
 """
 
 import os
+'''
 import redis
+'''
 import gevent
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash, jsonify
