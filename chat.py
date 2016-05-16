@@ -134,21 +134,34 @@ chats.start()
 
 @app.route('/')
 def show_entries():
+    data = None
     db = chats.get_db()
     cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries order by id desc')
     entries = cur.fetchall()
-    return render_template('show_entries.html', entries=entries)
+    return render_template('show_entries.html', entries=entries, data=data)
 
 @app.route('/add', methods=['POST'])
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    db = chats.get_db()
-    db.execute('insert into entries (qr, name, lang, place, memo, start) values (?, ?, ?, ?, ?, ?)',
-               [request.form['qr'], request.form['name'], request.form['lang'], request.form['place'], request.form['memo'], datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
-    db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
+    if not (request.form['qr']):
+        print request
+        print request.form['name']
+        flash('Enter QRcode!')
+        return render_template('show_entries.html', data=request)
+    elif not (request.form['name']):
+        flash('Enter Name!')
+        return render_template('show_entries.html', data=request)
+    elif not (request.form['place']):
+        flash('Enter Place where you come from!')
+        return render_template('show_entries.html', data=request)
+    else:
+        db = chats.get_db()
+        db.execute('insert into entries (qr, name, lang, place, memo, start) values (?, ?, ?, ?, ?, ?)',
+                   [request.form['qr'], request.form['name'], request.form['lang'], request.form['place'], request.form['memo'], datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+        db.commit()
+        flash('New entry was successfully posted')
+        return redirect(url_for('show_entries'))
 
 @app.route('/show/<int:entry_id>', methods=['GET'])
 def show_entry(entry_id):

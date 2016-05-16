@@ -11,6 +11,12 @@
   {% for message in get_flashed_messages() %}
     {% if not session.logged_in %}
       <div class="alert alert-danger">{{ message }}</div>
+    {% elif message == 'Enter QRcode!' %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% elif message == 'Enter Name!' %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% elif message == 'Enter Place where you come from!' %}
+      <div class="alert alert-danger">{{ message }}</div>
     {% else %}
       <div class="alert alert-success">{{ message }}</div>
     {% endif %}

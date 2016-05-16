@@ -11,27 +11,37 @@
   <form id="input-form" class="form-inline" action="{{ url_for('add_entry') }}" method="post">
     <div class="form-group">
       <label>QRcode</label>
-      <input type="text" size="30" name="qr" class="form-control" placeholder="Enter QRcode here!" autofocus />
+      <input type="text" size="30" name="qr" class="form-control" placeholder="Enter QRcode here!" autofocus 
+      {% if data %} value={{data.form['qr']}}{% endif %} >
     </div>
     <div class="form-group">
       <label>Name</label>
-      <input type="text" size="30" name="name" class="form-control" placeholder="Enter Name here!" autofocus />
+      <input type="text" size="30" name="name" class="form-control" placeholder="Enter Name here!" autofocus 
+      {% if data %} value={{data.form['name']}}{% endif %} >
     </div>
     <div class="form-group">
       <label>Language</label>
       <select class="form-control" name="lang">
+        {% if data %}
+        <option value="Japanese"{% if data.form['lang']=="Japanese" %} selected="selected"{% endif %}>Japanese</option>
+        <option value="English"{% if data.form['lang']=="English" %} selected="selected"{% endif %}>English</option>
+        <option value="Chinese"{% if data.form['lang']=="Chinese" %} selected="selected"{% endif %}>Chinese</option>
+        {% else %}
         <option value="Japanese">Japanese</option>
         <option value="English">English</option>
         <option value="Chinese">Chinese</option>
+        {% endif %}
       </select>
     </div>
     <div class="form-group">
       <label>From</label>
-      <input type="text" size="30" name="place" class="form-control" placeholder="Enter Place where you come from here!" autofocus />
+      <input type="text" size="30" name="place" class="form-control" placeholder="Enter Place where you come from here!" autofocus
+      {% if data %} value={{data.form['place']}}{% endif %} >
     </div>
     <div class="form-group">
       <label>Memo</label>
-      <input type="text" size="30" name="memo" class="form-control" placeholder="Enter Memo here!" autofocus />
+      <input type="text" size="30" name="memo" class="form-control" placeholder="Enter Memo here!" autofocus
+      {% if data %} value={{data.form['memo']}}{% endif %} >
     </div>
     <div class="text-right">
       <button class="btn btn-primary" type="submit">Register</button>
