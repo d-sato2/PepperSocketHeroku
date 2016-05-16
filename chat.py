@@ -34,8 +34,12 @@ else:
 HOST='localhost'
 PORT=6379
 DB=0
+
+'''
 redis = redis.Redis(host=HOST, port=PORT, db=DB)
 REDIS_CHAN = 'chat'
+'''
+
 app = Flask(__name__)
 app.debug = 'DEBUG' in os.environ
 sockets = Sockets(app)
@@ -55,9 +59,12 @@ class ChatBackend(object):
 
     def __init__(self):
         self.clients = list()
+        '''
         self.pubsub = redis.pubsub()
         self.pubsub.subscribe(REDIS_CHAN)
+        '''
 
+    '''
     def __iter_data(self):
         for message in self.pubsub.listen():
             data = message.get('data')
@@ -65,6 +72,7 @@ class ChatBackend(object):
                 data = data.decode('utf-8')
                 app.logger.info(u'Sending message: {}'.format(data))
                 yield data
+    '''
 
     def register(self, client):
         """Register a WebSocket connection for Redis updates."""
@@ -105,6 +113,7 @@ class ChatBackend(object):
         except Exception:
             self.clients.remove(client)
 
+    '''
     def run(self):
         """Listens for new messages in Redis, and sends them to clients."""
         for data in self.__iter_data():
@@ -114,9 +123,12 @@ class ChatBackend(object):
     def start(self):
         """Maintains Redis subscription in the background."""
         gevent.spawn(self.run)
+    '''
 
 chats = ChatBackend()
+'''
 chats.start()
+'''
 
 @app.route('/')
 def show_entries():
@@ -211,9 +223,11 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('show_entries'))
 
+'''
 @app.route('/chat')
 def hello():
     return render_template('index.html')
+
 
 @sockets.route('/submit')
 def inbox(ws):
@@ -236,4 +250,4 @@ def outbox(ws):
     while not ws.closed:
         # Context switch while `ChatBackend.start` is running in the background.
         gevent.sleep(0.1)
-
+'''
