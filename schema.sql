@@ -4,6 +4,8 @@ create table entries (
   qr text not null,
   name text not null,
   lang text not null,
+  place text,
   memo text,
-  start text not null
+  start text not null,
+  goal text
 );

@@ -42,7 +42,7 @@ sockets = Sockets(app)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+    DATABASE=os.path.join(app.root_path, '160516_tourists.db'),
     DEBUG=True,
     SECRET_KEY='development key',
     USERNAME='admin',
@@ -121,7 +121,7 @@ chats.start()
 @app.route('/')
 def show_entries():
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, memo, start from entries order by id desc')
+    cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries order by id desc')
     entries = cur.fetchall()
     return render_template('show_entries.html', entries=entries)
 
@@ -130,8 +130,8 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     db = chats.get_db()
-    db.execute('insert into entries (qr, name, lang, memo, start) values (?, ?, ?, ?, ?)',
-               [request.form['qr'], request.form['name'], request.form['lang'], request.form['memo'], datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+    db.execute('insert into entries (qr, name, lang, place, memo, start) values (?, ?, ?, ?, ?, ?)',
+               [request.form['qr'], request.form['name'], request.form['lang'], request.form['place'], request.form['memo'], datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     db.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
@@ -139,7 +139,7 @@ def add_entry():
 @app.route('/show/<int:entry_id>', methods=['GET'])
 def show_entry(entry_id):
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
+    cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries where id = ?', [entry_id])
     entry = cur.fetchone()
     return render_template('show.html', entry=entry)
 
@@ -147,7 +147,7 @@ def show_entry(entry_id):
 @app.route('/json/<int:entry_qr>', methods=['GET'])
 def json_entry(entry_qr):
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, memo, start from entries where qr = ?', [entry_qr])
+    cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries where qr = ?', [entry_qr])
     entry = cur.fetchone()
     if entry is None:
         return 'There is no data. Please check QR code number.'
@@ -157,8 +157,10 @@ def json_entry(entry_qr):
                'qr': entry[1],
                'name': entry[2],
                'lang': entry[3],
-               'memo': entry[4],
-               'start': entry[5],
+               'place': entry[4],
+               'memo': entry[5],
+               'start': entry[6],
+               'start': entry[7]
            }
         return jsonify(entry_json)
 
@@ -169,13 +171,13 @@ def edit_entry(entry_id):
         abort(401)
     if request.method == 'GET':
         db = chats.get_db()
-        cur = db.execute('select id, qr, name, lang, memo, start from entries where id = ?', [entry_id])
+        cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries where id = ?', [entry_id])
         entry = cur.fetchone()
         return render_template('edit.html', error=error, entry=entry)
     elif request.method == 'POST':
         db = chats.get_db()
-        db.execute('update entries set qr = ?, name = ?, lang = ?, memo = ? where id = ?',
-                   [request.form['qr'], request.form['name'], request.form['lang'], request.form['memo'], entry_id])
+        db.execute('update entries set qr = ?, name = ?, lang = ?, place = ?, memo = ? where id = ?',
+                   [request.form['qr'], request.form['name'], request.form['lang'], request.form['place'], request.form['memo'], entry_id])
         db.commit()
         flash('The entry was successfully updated')
         return redirect(url_for('show_entries'))

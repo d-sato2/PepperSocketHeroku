@@ -10,7 +10,7 @@
     <div class="form-group">
       <label>Name</label>
       <input type="text" size="30" name="name" class="form-control" value="{{ entry.name }}" autofocus />
-    </div>
+    </div> 
     <div class="form-group">
       <label>Language</label>
       <select class="form-control" name="lang" >
@@ -18,6 +18,10 @@
         <option value="English"{% if entry.lang=="English" %} selected="selected"{% endif %}>English</option>l
         <option value="Chinese"{% if entry.lang=="Chinese" %} selected="selected"{% endif %}>Chinese</option>
       </select>
+    </div>
+    <div class="form-group">
+      <label>From</label>
+      <input type="text" size="30" name="place" class="form-control" value="{{ entry.place }}" autofocus />
     </div>
     <div class="form-group">
       <label>Memo</label>
