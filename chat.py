@@ -136,7 +136,7 @@ chats.start()
 def show_entries():
     data = None
     db = chats.get_db()
-    cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries order by id desc')
+    cur = db.execute('select id, qr, name, lang, place, memo, start, goal from entries order by goal desc')
     entries = cur.fetchall()
     return render_template('show_entries.html', entries=entries, data=data)
 
