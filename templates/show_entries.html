@@ -80,7 +80,6 @@
   {% if session.logged_in %}
     <td><a href="{{ url_for('show_entry', entry_id = entry.id) }}" class="btn btn-default btn-sm active" role="button">Show</a></td>
     <td><a href="{{ url_for('edit_entry', entry_id = entry.id) }}" class="btn btn-info btn-sm active" role="button">Edit</a></td>
-    <td><a onclick=kakunin({{entry.id}}) class="btn btn-warning btn-sm active" role="button">Delete</a></td>
   {% endif %}
   {% else %}
     <td>Unbelievable.</td>

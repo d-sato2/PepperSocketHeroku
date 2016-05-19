@@ -195,8 +195,6 @@ def json_entry(entry_qr):
         db.execute('update entries set goal = ? where qr = ?',
                    [request.form['goal'], entry_qr])
         db.commit()
-        flash('The goal time was successfully updated')
-        return redirect(url_for('show_entries'))
 
 @app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
 def edit_entry(entry_id):
